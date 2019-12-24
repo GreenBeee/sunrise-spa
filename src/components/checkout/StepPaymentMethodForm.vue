@@ -15,6 +15,7 @@
                  data-test="checkout-form-payment-methods">
         <BaseRadio v-model="form.paymentMethod"
                    value="card"
+                   @change="changePaypal"
                    class="checkout-form-option">
           <span class="option-name">
             {{ $t('creditCard') }}
@@ -25,6 +26,7 @@
         </BaseRadio>
         <BaseRadio v-model="form.paymentMethod"
                    value="paypal"
+                   @change="changePaypal"
                    class="checkout-form-option">
           <span class="option-name">
             PayPal
@@ -32,6 +34,7 @@
               <img src="../../assets/img/payment-option-paypal.png">
             </span>
           </span>
+          <PayPal v-if="isPaypal"/>
         </BaseRadio>
       </BaseLabel>
       <CheckoutNavigation :state="state"
@@ -48,9 +51,11 @@ import BaseForm from '../common/form/BaseForm.vue';
 import BaseLabel from '../common/form/BaseLabel.vue';
 import ServerError from '../common/form/ServerError.vue';
 import CheckoutNavigation from './CheckoutNavigation.vue';
+import PayPal from './PayPal.vue';
 
 export default {
   components: {
+    PayPal,
     BaseLabel,
     CheckoutNavigation,
     ServerError,
@@ -61,6 +66,7 @@ export default {
   mixins: [cartMixin],
 
   data: () => ({
+    isPaypal: false,
     form: {
       paymentMethod: 'card',
     },
@@ -84,6 +90,13 @@ export default {
 
     goToShippingMethod() {
       this.$router.push({ name: 'checkout-shipping-method' });
+    },
+    changePaypal(value) {
+      if (value === 'card') {
+        this.isPaypal = false;
+      } else if (value === 'paypal') {
+        this.isPaypal = true;
+      }
     },
   },
 
