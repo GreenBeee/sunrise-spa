@@ -35,15 +35,6 @@
             </span>
           </span>
           <PayPal v-if="isPaypal"/>
-          <!--          <paypal-checkout-->
-          <!--                    env="sandbox"-->
-          <!--                    :amount="100"-->
-          <!--                    currency="EUR"-->
-          <!--                    locale="en_US"-->
-          <!--                    :client="paypal"-->
-          <!--                    :invoice-number="'201705051001'"-->
-          <!--                    notify-url="/home">-->
-          <!--          </paypal-checkout>-->
         </BaseRadio>
       </BaseLabel>
       <CheckoutNavigation :state="state"
