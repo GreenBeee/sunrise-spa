@@ -62,21 +62,20 @@ export default {
 
     setLoaded() {
       this.loaded = true;
-      console.log(this.me.activeCart.id);
+      const cartId = this.me.activeCart.id;
+      console.log(cartId);
       window.paypal
         .Buttons({
-          createOrder: (data, actions) => actions.order.create({
-            intent: 'AUTHORIZE',
-            purchase_units: [
-              {
-                amount: {
-                  currency_code: this.me.activeCart.totalPrice.currencyCode,
-                  // eslint-disable-next-line max-len
-                  value: (this.me.activeCart.totalPrice.centAmount / (10 ** this.me.activeCart.totalPrice.fractionDigits)),
-                },
+          createOrder() {
+            return fetch(`http://localhost:8000/cart/${cartId}/authorize`, {
+              method: 'get',
+              headers: {
+                'content-type': 'application/json',
               },
-            ],
-          }),
+            })
+              .then(res => res.text());
+          },
+
           onApprove: async (data, actions) => {
             actions.order.authorize().then((authorization) => {
               const authorizationID = authorization.purchase_units[0].payments.authorizations[0].id;
