@@ -67,7 +67,7 @@ export default {
       window.paypal
         .Buttons({
           createOrder() {
-            return fetch(`http://localhost:8000/cart/${cartId}/authorize`, {
+            return fetch(`http://localhost:8000/paypal-connector/cart/${cartId}/authorize`, {
               method: 'get',
               headers: {
                 'content-type': 'application/json',
