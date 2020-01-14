@@ -6,10 +6,6 @@
 
 <script>
 
-import gql from 'graphql-tag';
-import CART_FRAGMENT from '../Cart.gql';
-import MONEY_FRAGMENT from '../Money.gql';
-import ADDRESS_FRAGMENT from '../Address.gql';
 import cartMixin from '../../mixins/cartMixin';
 
 export default {
@@ -29,26 +25,6 @@ export default {
 
   mixins: [cartMixin],
 
-  apollo: {
-    me: {
-      query: gql`
-        query me($locale: Locale!) {
-          me {
-            activeCart {
-              ...CartFields
-            }
-          }
-        }
-        ${CART_FRAGMENT}
-        ${MONEY_FRAGMENT}
-        ${ADDRESS_FRAGMENT}`,
-      variables() {
-        return {
-          locale: this.$store.state.locale,
-        };
-      },
-    },
-  },
   mounted() {
     const script = document.createElement('script');
     script.src = `https://www.paypal.com/sdk/js?currency=EUR&intent=authorize&client-id=${this.paypal.sandbox}`;
@@ -63,6 +39,7 @@ export default {
     setLoaded() {
       this.loaded = true;
       const cartId = this.me.activeCart.id;
+      const meApollo = this.$apollo.queries.me;
       console.log(cartId);
       window.paypal
         .Buttons({
@@ -73,7 +50,10 @@ export default {
                 'content-type': 'application/json',
               },
             })
-              .then(res => res.text());
+              .then((res) => {
+                meApollo.refetch();
+                return res.text();
+              });
           },
 
           onApprove: async (data, actions) => {
